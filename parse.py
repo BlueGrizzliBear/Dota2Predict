@@ -33,7 +33,7 @@ def	ft_progress(lst):
 		print(erase_line + "ETA: %.2fs [%3.0f%%][%s] %i/%i | elapsed time %.2fs" % (eta, percent, progress, i + 1, len(lst), elapsed), end='\r', flush=True)
 		yield i
 
-def convert_draft_str_to_array(data):
+def parse_data(data):
 
 	def get_hero_labels():	
 		heroes = pd.read_csv("./resources/dota2_heroes.csv")
@@ -77,46 +77,5 @@ def convert_draft_str_to_array(data):
 
 # @func_deco
 def	remove_empty_row(data):
-	data = data[data.astype(str)['draft'] != '[]']
+	data = data[data.astype(str)['radiant', 'dire'] != '[]']
 	return data
-
-# @func_deco
-def dataframe_to_draft_str(data):
-	draft = np.array(data['draft'])
-
-	match_heroes = []
-	for matches in draft:
-		str_radiant = ""
-		str_dire = ""
-		j = 0
-		k = 0
-		rad = 3
-		choose = True
-		for i in range(len(matches)):
-			if matches[i].get('pick') == True:
-				if choose == True:
-					if matches[i].get('active_team') == 2:
-						if matches[i].get('player_slot') % 2 == 0:
-							rad = 0
-						else:
-							rad = 1
-					else:
-						if matches[i].get('player_slot') % 2 == 0:
-							rad = 1
-						else:
-							rad = 0
-					choose = False
-
-				if matches[i].get('player_slot') % 2 == rad:
-					str_radiant += str(matches[i].get('hero_id'))
-					j += 1
-					if j < 5:
-						str_radiant += ", "
-				else:
-					str_dire += str(matches[i].get('hero_id'))
-					k += 1
-					if k < 5:
-						str_dire += ", "
-		match_heroes.append(np.asarray([str_radiant, str_dire], dtype=list))
-	match_heroes = np.asarray(match_heroes, dtype=list)
-	return match_heroes

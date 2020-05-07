@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 from data_spliter import data_spliter
 from my_logistic_regression import MyLogisticRegression
-from parse import convert_draft_str_to_array, dataframe_to_draft_str, remove_empty_row
+from parse import parse_data, remove_empty_row
 
 def main():
 
@@ -21,29 +21,26 @@ def main():
 
 # FOR PRO GAMES - NEW
 	data = pd.read_json("./resources/new_data.json")
-	# data = remove_empty_row(data)
 	slot = ["slot_" + str(item) for item in range(0, 10)]
 	slot.append('radiant')
 	slot.append('dire')
 	
 	# print (type(data))
-	t = convert_draft_str_to_array(data[slot])
+	t = parse_data(data[slot])
 	hero_label = t[0]
-	print (hero_label)
 	team_label = t[1]
 	x = t[2]
 	y = np.array(data['win']).astype(float)
-	print (x)
 
-
-	# shape = (len(x[0])+ 1,)
-	# thetas = np.zeros(shape)
+	print (x.shape)
+	shape = (len(x[0]), len(x[0][0])+ 1,)
+	thetas = np.zeros(shape)
 	# thetas = np.full_like(x[0], 0.5, dtype=float, shape=(len(x[0])+ 1,))
 	# thetas[0] = 0
+	# print (thetas.shape)
 
 	t = data_spliter(x, y, 0.8)
 	xtrain = t[0]
-	print (xtrain)
 	xtest = t[1]
 	ytrain = t[2]
 	ytest = t[3]
@@ -51,10 +48,10 @@ def main():
 	alpha = 5e-1
 	n_cycle = 100
 
-	# MyLR = MyLogisticRegression(thetas, alpha, n_cycle)
+	MyLR = MyLogisticRegression(thetas, alpha, n_cycle)
 
-	# pred = MyLR.logistic_predict_(xtrain)
-	# print (pred)
+	pred = MyLR.logistic_predict_(xtrain)
+	print (pred)
 	# cost = MyLR.cost_(xtrain, ytrain)
 	# print ("Cost = " + str(cost))
 	# mse = MyLR.mse_(xtest, ytest)

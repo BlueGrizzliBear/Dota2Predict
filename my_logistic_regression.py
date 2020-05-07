@@ -67,7 +67,7 @@ class MyLogisticRegression():
 
 	def add_intercept(self, x):
 		tmp = np.copy(x)
-		res = np.c_[np.ones(x.shape[0]), tmp]
+		res = np.c_[np.ones(x.shape[1]), tmp]
 		return res
 
 	def sigmoid_(self, x):
