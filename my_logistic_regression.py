@@ -3,6 +3,7 @@ from matrix import Matrix
 from vector import Vector
 import matplotlib.pyplot as plt
 import time
+from decorator import func_deco
 
 class MyLogisticRegression():
 
@@ -50,6 +51,7 @@ class MyLogisticRegression():
 			print(erase_line + "ETA: %.2fs [%3.0f%%][%s] %i/%i | elapsed time %.2fs" % (eta, percent, progress, i + 1, len(lst), elapsed), end='\r', flush=True)
 			yield i
 
+	@func_deco
 	def fit_(self, x, y):
 		# y = y.flatten()
 		# self.thetas = self.thetas.flatten()
@@ -117,18 +119,25 @@ class MyLogisticRegression():
 		fp = 0
 		fn = 0
 		for index, game_res in enumerate(y_hat):
-			# res = round(game_res)	
-			# if res == y[index] and res == 1:
-			if game_res > 0.95 and y[index] == 1:
+			if game_res > 0.5 and y[index] == 1:
 				tp += 1
-			# elif res == y[index] and res == 0:
-			elif game_res < 0.05 and y[index] == 0:
+			elif game_res < 0.5 and y[index] == 0:
 				tn += 1
-			# elif res != y[index] and res == 1:
-			elif game_res > 0.05 and y[index] == 0:
+			elif game_res > 0.5 and y[index] == 0:
 				fp += 1
-			# elif res != y[index] and res == 0:
-			elif game_res < 0.95 and y[index] == 1:
+			elif game_res < 0.5 and y[index] == 1:
 				fn += 1
 		res = (tp + tn) / (tp + fn + tn + fp)
 		return str(round(100 * res, 2)) + "%"
+
+	def mse_(self, x, y):
+		y_hat = self.logistic_predict_(x)
+		if len(y.shape) > 1:
+			y = y.flatten()
+		if len(y_hat.shape) > 1:
+			y_hat = y_hat.flatten()
+		if y.shape != y_hat.shape:
+			return None
+		m1 = y_hat.shape[0]
+		J_mse = sum((1 / m1) * pow(y_hat - y, 2))
+		return J_mse
