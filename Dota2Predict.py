@@ -12,23 +12,38 @@ def main():
 	# y = np.array(data['radiant_win']).astype(float)
 	# t = convert_draft_str_to_array(x)
 
-# FOR PRO GAMES
-	data = pd.read_json("./resources/data.json")
-	data = remove_empty_row(data)
-	x = dataframe_to_draft_str(data)
-	y = np.array(data['win']).astype(float)
-	
-	t = convert_draft_str_to_array(x)
-	x_label = t[0]
-	x = t[1]
+# FOR PRO GAMES - OLD
+	# data = pd.read_json("./resources/data.json")
+	# data = remove_empty_row(data)
+	# x = dataframe_to_draft_str(data)
+	# y = np.array(data['win']).astype(float)
+	# t = convert_draft_str_to_array(x)
 
-	shape = (len(x[0])+ 1,)
-	thetas = np.zeros(shape)
+# FOR PRO GAMES - NEW
+	data = pd.read_json("./resources/new_data.json")
+	# data = remove_empty_row(data)
+	slot = ["slot_" + str(item) for item in range(0, 10)]
+	slot.append('radiant')
+	slot.append('dire')
+	
+	# print (type(data))
+	t = convert_draft_str_to_array(data[slot])
+	hero_label = t[0]
+	print (hero_label)
+	team_label = t[1]
+	x = t[2]
+	y = np.array(data['win']).astype(float)
+	print (x)
+
+
+	# shape = (len(x[0])+ 1,)
+	# thetas = np.zeros(shape)
 	# thetas = np.full_like(x[0], 0.5, dtype=float, shape=(len(x[0])+ 1,))
-	thetas[0] = 0
+	# thetas[0] = 0
 
 	t = data_spliter(x, y, 0.8)
 	xtrain = t[0]
+	print (xtrain)
 	xtest = t[1]
 	ytrain = t[2]
 	ytest = t[3]
@@ -36,35 +51,35 @@ def main():
 	alpha = 5e-1
 	n_cycle = 100
 
-	MyLR = MyLogisticRegression(thetas, alpha, n_cycle)
+	# MyLR = MyLogisticRegression(thetas, alpha, n_cycle)
 
 	# pred = MyLR.logistic_predict_(xtrain)
 	# print (pred)
-	cost = MyLR.cost_(xtrain, ytrain)
-	print ("Cost = " + str(cost))
-	mse = MyLR.mse_(xtest, ytest)
-	print ("MSE = " + str(mse))
+	# cost = MyLR.cost_(xtrain, ytrain)
+	# print ("Cost = " + str(cost))
+	# mse = MyLR.mse_(xtest, ytest)
+	# print ("MSE = " + str(mse))
 
-	new_thetas = MyLR.fit_(xtrain, ytrain)
+	# new_thetas = MyLR.fit_(xtrain, ytrain)
 	# print ("New_thetas :")
 	# print (new_thetas)
 
-	cost = MyLR.cost_(xtrain, ytrain)
-	print ("Cost = " + str(cost))
-	mse = MyLR.mse_(xtest, ytest)
-	print ("MSE = " + str(mse))
+	# cost = MyLR.cost_(xtrain, ytrain)
+	# print ("Cost = " + str(cost))
+	# mse = MyLR.mse_(xtest, ytest)
+	# print ("MSE = " + str(mse))
 
-	pred = np.round_(MyLR.logistic_predict_(xtest), 2)
+	# pred = np.round_(MyLR.logistic_predict_(xtest), 2)
 	# i = 0
 	# while i < len(pred):
 	# 	print ("Comparing ===")
 	# 	print ("Pred. = " + str(pred[i]))
 	# 	print ("Truth = " + str(y[i]))
 	# 	i += 1
-	print (pred)
-	print (ytest)
-	accuracy = MyLR.accuracy_score_(xtest, ytest) 
-	print ("Accuracy = " + str(accuracy))
+	# print (pred)
+	# print (ytest)
+	# accuracy = MyLR.accuracy_score_(xtest, ytest) 
+	# print ("Accuracy = " + str(accuracy))
 
 	# the_x_test = np.array([['86,43,84,114,96', '111,95,110,38,39']])
 	# y_test = np.array([1.0])

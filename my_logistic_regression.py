@@ -51,7 +51,7 @@ class MyLogisticRegression():
 			print(erase_line + "ETA: %.2fs [%3.0f%%][%s] %i/%i | elapsed time %.2fs" % (eta, percent, progress, i + 1, len(lst), elapsed), end='\r', flush=True)
 			yield i
 
-	@func_deco
+	# @func_deco
 	def fit_(self, x, y):
 		# y = y.flatten()
 		# self.thetas = self.thetas.flatten()

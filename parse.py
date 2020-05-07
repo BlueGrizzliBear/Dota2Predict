@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 from decorator import func_deco
+import time
 
 # def func_deco(func):
 # 	def wrapper(*args, **kwargs):
@@ -10,64 +11,81 @@ from decorator import func_deco
 # 		return ret
 # 	return wrapper
 
-@func_deco
-def convert_draft_str_to_array(x):
+# @func_deco
 
-	def get_heroes_labels():	
+def	ft_progress(lst):
+	start = time.perf_counter()
+	for i in lst:
+		if i == 0 or i == len(lst) - 1:
+			eta = 0
+		else:
+			eta = round((time.perf_counter() - start) / (i) * len(lst) - (time.perf_counter() - start), 2)
+		percent = round(((i + 1) / len(lst)) * 100)
+		progress = ""
+		progress = progress.rjust(round((i / len(lst)) * 30), '=')
+		if i < len(lst) - 1:
+			progress += '>'
+		else:
+			progress += '='
+		progress = progress.ljust(31, ' ')
+		elapsed = time.perf_counter() - start
+		erase_line = '\x1b[2K'
+		print(erase_line + "ETA: %.2fs [%3.0f%%][%s] %i/%i | elapsed time %.2fs" % (eta, percent, progress, i + 1, len(lst), elapsed), end='\r', flush=True)
+		yield i
+
+def convert_draft_str_to_array(data):
+
+	def get_hero_labels():	
 		heroes = pd.read_csv("./resources/dota2_heroes.csv")
-		x_label = np.array(heroes['id'])
-		# x_label = np.c_[x_label, np.full_like(x_label, 0.5, dtype=float)]
-		x_label = np.c_[x_label, np.zeros(len(x_label))]
-		return x_label
+		hero_label = pd.DataFrame(np.array(heroes['id']))
+		return hero_label
 
-	def convert_team_to_list(string):
-		lst = string.split(',')
-		# print (string)
-		# print (lst)
-		return list(np.float_(lst))
+	def get_team_labels(data):
+		return pd.DataFrame(data['radiant'].append(data['dire']).unique())
+	
+	def assimilate_data(data, hero_label, team_label):
+		a = len(data)
+		b = len(team_label)
+		c = len(hero_label)
+		shape = (a,b,c)
+		last_array = np.zeros(shape)
+		
+		max_iter = range(len(data))
+		for row_index in ft_progress(max_iter):
 
-	def prework_data(x, x_label):
-		new_x = np.array([[]])
-		new_x_index = 0
-		for index, row in enumerate(x):
-			new_a = np.copy(x_label)
-			radiant = 0
-			for team in row:
-				for hero_id in convert_team_to_list(team):
-					i = 0
-					while i < len(new_a):
-						if hero_id == new_a[i][0] and radiant < 5:
-							new_a[i][1] = 1
-						elif hero_id == new_a[i][0] and radiant >= 5:
-							new_a[i][1] = -1
-						i += 1
-					radiant += 1
-			new_a = new_a.transpose()[1]
-			if new_x_index == 0:
-				new_x = np.append(new_x, [new_a], 1)
-			else:
-				new_x = np.append(new_x, [new_a], 0)
-			new_x_index += 1
-		return new_x
+			player_slot = ["slot_" + str(item) for item in range(0, 10)]
+			team_radiant = data['radiant'][row_index]
+			team_dire = data['dire'][row_index]
+			team_radiant_index = team_label[team_label[0] == team_radiant].index[0]
+			team_dire_index = team_label[team_label[0] == team_dire].index[0]
+			
+			for index, slot in enumerate(player_slot):
+				hero_index = hero_label[hero_label[0] == data[slot][row_index]].index[0]
+				if index < 5:				
+					last_array[row_index][team_radiant_index][hero_index] = 1.
+				elif index >= 5:
+					last_array[row_index][team_dire_index][hero_index] = -1.
+			
+		print ("")
+		return last_array
+		
+	hero_label = get_hero_labels()
+	team_label = get_team_labels(data)
+	parsed_data = assimilate_data(data, hero_label, team_label)
 
-	x_label = get_heroes_labels()
-	new_x = prework_data(x, x_label)
+	return hero_label, team_label, parsed_data
 
-	return x_label, new_x
-
-
-@func_deco
+# @func_deco
 def	remove_empty_row(data):
 	data = data[data.astype(str)['draft'] != '[]']
 	return data
 
-@func_deco
+# @func_deco
 def dataframe_to_draft_str(data):
 	draft = np.array(data['draft'])
 
 	match_heroes = []
 	for matches in draft:
-		#active_team : 2 = radiant, 3 = dire
 		str_radiant = ""
 		str_dire = ""
 		j = 0
