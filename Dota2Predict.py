@@ -56,9 +56,9 @@ def main():
 	print_colored("Calculating accuracy . . .", '\033[94m')	
 	accuracy = myLogR.score(xtest, ytest)
 	if accuracy > 0.5:
-		print_colored("Accuracy = " + accuracy, '\033[92m')	
+		print_colored("Accuracy = " + str(accuracy), '\033[92m')	
 	else:
-		print_colored("Accuracy = " + accuracy, '\033[91m')	
+		print_colored("Accuracy = " + str(accuracy), '\033[91m')	
 
 	pass	
 
