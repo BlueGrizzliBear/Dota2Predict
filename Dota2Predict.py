@@ -1,96 +1,66 @@
 import numpy as np
 import pandas as pd
-from data_spliter import data_spliter
-from my_logistic_regression import MyLogisticRegression
-from parse import parse_data, remove_empty_row
+from decorator import print_colored
+from DataExtractor import Data_Extractor
+from sklearn.linear_model import LogisticRegression
+from sklearn.model_selection import train_test_split
 
 def main():
-
-# FOR PUB GAMES
-	# data = pd.read_csv("./resources/dota2_pub_matchs.csv")
-	# x = np.array(data[['radiant_team', 'dire_team']])
-	# y = np.array(data['radiant_win']).astype(float)
-	# t = convert_draft_str_to_array(x)
-
-# FOR PRO GAMES - OLD
-	# data = pd.read_json("./resources/data.json")
-	# data = remove_empty_row(data)
-	# x = dataframe_to_draft_str(data)
-	# y = np.array(data['win']).astype(float)
-	# t = convert_draft_str_to_array(x)
-
 # FOR PRO GAMES - NEW
-	data = pd.read_json("./resources/new_data.json")
-	slot = ["slot_" + str(item) for item in range(0, 10)]
-	slot.append('radiant')
-	slot.append('dire')
-	
-	# print (type(data))
-	t = parse_data(data[slot])
+	t = Data_Extractor()
 	hero_label = t[0]
 	team_label = t[1]
 	x = t[2]
-	y = np.array(data['win']).astype(float)
+	y = t[3]
 
-	print (x.shape)
-	shape = (len(x[0]), len(x[0][0])+ 1,)
-	thetas = np.zeros(shape)
-	# thetas = np.full_like(x[0], 0.5, dtype=float, shape=(len(x[0])+ 1,))
-	# thetas[0] = 0
-	# print (thetas.shape)
+	print_colored("Reshaping x(a,b,c) into x(a,b*c) . . .", '\033[94m')
+	nsamples, nx, ny = x.shape
+	x_reshaped = x.reshape((nsamples,nx*ny))
+	print_colored("Done !", '\033[92m')	
 
-	t = data_spliter(x, y, 0.8)
+	split = 0.8
+	print_colored("Spliting data " + str(round(100 * split)) + "%/" + str(round(100 * (1-split))) + "% . . .", '\033[94m')
+	t = train_test_split(x_reshaped, y, train_size=0.8)
 	xtrain = t[0]
 	xtest = t[1]
 	ytrain = t[2]
 	ytest = t[3]
+	print_colored("Done !", '\033[92m')	
 
 	alpha = 5e-1
-	n_cycle = 100
+	n_cycle = 10000
 
-	MyLR = MyLogisticRegression(thetas, alpha, n_cycle)
+	print_colored("Creating Logistic_Regression Model . . .", '\033[94m')
+	myLogR = LogisticRegression(penalty='none', tol=alpha, max_iter=n_cycle)
+	print_colored("Done !", '\033[92m')	
 
-	pred = MyLR.logistic_predict_(xtrain)
-	print (pred)
-	# cost = MyLR.cost_(xtrain, ytrain)
-	# print ("Cost = " + str(cost))
-	# mse = MyLR.mse_(xtest, ytest)
-	# print ("MSE = " + str(mse))
+	print_colored("Fitting model . . .", '\033[94m')	
+	myLogR.fit(xtrain, ytrain)
+	print_colored("Done !", '\033[92m')	
+	
+	print_colored("Predicting model with xtest . . .", '\033[94m')	
+	pred = myLogR.predict(xtest)
+	print_colored("Done !", '\033[92m')	
 
-	# new_thetas = MyLR.fit_(xtrain, ytrain)
-	# print ("New_thetas :")
-	# print (new_thetas)
+	def display_diff(pred, ytest):
+		for index, value in enumerate(ytest):
+			if value == pred[index]:
+				print_colored("OK", '\033[92m')	
+			else:
+				print_colored("NOK: pred(" + str(pred[index]) + ") vs test(" + str(value) + ")", '\033[91m')
+		pass
 
-	# cost = MyLR.cost_(xtrain, ytrain)
-	# print ("Cost = " + str(cost))
-	# mse = MyLR.mse_(xtest, ytest)
-	# print ("MSE = " + str(mse))
+	print_colored("Displaying results on test_set . . .", '\033[94m')	
+	display_diff(pred, ytest)
 
-	# pred = np.round_(MyLR.logistic_predict_(xtest), 2)
-	# i = 0
-	# while i < len(pred):
-	# 	print ("Comparing ===")
-	# 	print ("Pred. = " + str(pred[i]))
-	# 	print ("Truth = " + str(y[i]))
-	# 	i += 1
-	# print (pred)
-	# print (ytest)
-	# accuracy = MyLR.accuracy_score_(xtest, ytest) 
-	# print ("Accuracy = " + str(accuracy))
+	print_colored("Calculating accuracy . . .", '\033[94m')	
+	accuracy = myLogR.score(xtest, ytest)
+	if accuracy > 0.5:
+		print_colored("Accuracy = " + accuracy, '\033[92m')	
+	else:
+		print_colored("Accuracy = " + accuracy, '\033[91m')	
 
-	# the_x_test = np.array([['86,43,84,114,96', '111,95,110,38,39']])
-	# y_test = np.array([1.0])
-	# t = parse(the_x_test)
-	# x_label_test = t[0]
-	# x_test = t[1]
-	# print (x_test)
-
-	# print ("new TEST =================")
-	# pred = np.round_(MyLR.logistic_predict_(x_test), 2)
-	# print (pred)
-	# print (y_test)
-
-	pass
+	pass	
 
 if __name__ == "__main__":
     main()

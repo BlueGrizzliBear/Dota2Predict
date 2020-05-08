@@ -1,17 +1,8 @@
 import numpy as np
 import pandas as pd
 from decorator import func_deco
+from decorator import print_colored
 import time
-
-# def func_deco(func):
-# 	def wrapper(*args, **kwargs):
-# 		print (f"Executing : {func.__name__} . . .")
-# 		ret = func(*args, **kwargs)
-# 		print ("Done")
-# 		return ret
-# 	return wrapper
-
-# @func_deco
 
 def	ft_progress(lst):
 	start = time.perf_counter()
@@ -31,12 +22,13 @@ def	ft_progress(lst):
 		elapsed = time.perf_counter() - start
 		erase_line = '\x1b[2K'
 		print(erase_line + "ETA: %.2fs [%3.0f%%][%s] %i/%i | elapsed time %.2fs" % (eta, percent, progress, i + 1, len(lst), elapsed), end='\r', flush=True)
+		# print_colored(erase_line + "ETA: %.2fs [%3.0f%%][%s] %i/%i | elapsed time %.2fs" % (eta, percent, progress, i + 1, len(lst), elapsed), end='\r', flush=True, '\033[90m')
 		yield i
 
 def parse_data(data):
 
 	def get_hero_labels():	
-		heroes = pd.read_csv("./resources/dota2_heroes.csv")
+		heroes = pd.read_csv("./resources_data/dota2_heroes.csv")
 		hero_label = pd.DataFrame(np.array(heroes['id']))
 		return hero_label
 
@@ -74,8 +66,3 @@ def parse_data(data):
 	parsed_data = assimilate_data(data, hero_label, team_label)
 
 	return hero_label, team_label, parsed_data
-
-# @func_deco
-def	remove_empty_row(data):
-	data = data[data.astype(str)['radiant', 'dire'] != '[]']
-	return data
