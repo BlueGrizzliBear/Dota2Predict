@@ -31,7 +31,7 @@ def main():
 	n_cycle = 10000
 
 	print_colored("Creating Logistic_Regression Model . . .", '\033[94m')
-	myLogR = LogisticRegression(penalty='none', tol=alpha, max_iter=n_cycle)
+	myLogR = LogisticRegression(penalty='none', tol=alpha, max_iter=n_cycle, verbose=1)
 	print_colored("Done !", '\033[92m')	
 
 	print_colored("Fitting model . . .", '\033[94m')	
@@ -50,10 +50,10 @@ def main():
 				print_colored("NOK: pred(" + str(pred[index]) + ") vs test(" + str(value) + ")", '\033[91m')
 		pass
 
-	print_colored("Displaying results on test_set . . .", '\033[94m')	
+	print_colored("Displaying results on test_set . . .", '\033[94m')
 	display_diff(pred, ytest)
 
-	print_colored("Calculating accuracy . . .", '\033[94m')	
+	print_colored("Calculating accuracy . . .", '\033[94m')
 	accuracy = myLogR.score(xtest, ytest)
 	if accuracy > 0.5:
 		print_colored("Accuracy = " + str(accuracy), '\033[92m')	
