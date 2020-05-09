@@ -120,19 +120,18 @@ def main():
 		print_colored("Accuracy = " + str(accuracy), '\033[91m')
 	
 # DIFFERENCE OF TENDENCIES
-	x_test_result2 = x_test_result.drop(x_test_result[(x_test_result['Total'] < 10)].index)
-	x_result2 = x_result.drop(x_result[(x_result['Total'] < 10)].index)
-	frames = [x_result2['Team'], x_result2['Accuracy_score'], x_test_result2['Accuracy_score']]
+	x_test_result2 = x_test_result
+	x_result2 = x_result
+	frames = [x_result2['Team'], x_result2['Accuracy_score'], x_test_result2['Accuracy_score'], x_result2['Total'], x_test_result2['Total']]
 
-	# print (frames)
 	total = pd.concat(frames, axis=1, sort=False)
 	total = total.dropna()
-	total.columns = ['Team','Accuracy_score_model','Accuracy_score_test']
+	total.columns = ['Team','Accuracy_score_model','Accuracy_score_test','Total_model', 'Total_test']
 	total['Diff'] = np.zeros(total.shape[0])
 	total['Diff'] = total['Accuracy_score_test'] - total['Accuracy_score_model']
-	print (total)
 
-	
+	print (total.sort_values(["Total_model", "Total_test", "Accuracy_score_test"], ascending=[True, True, True]))
+	# print (total)
 	pass	
 
 if __name__ == "__main__":

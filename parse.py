@@ -4,6 +4,11 @@ from decorator import func_deco
 from decorator import print_colored
 import time
 
+from datetime import datetime
+from datetime import timedelta
+# from datetime import date
+from dateutil.relativedelta import relativedelta
+
 def	ft_progress(lst):
 	start = time.perf_counter()
 	for i in lst:
@@ -27,7 +32,7 @@ def	ft_progress(lst):
 def parse_data(data):
 
 	def sigmoid_(current, first, last):
-		x = 5 * (current - first) / (last - first)
+		x = 10 * (60*60*24*60) / (last - first) * (current - first) / (last - first)
 		res = 2 * float(1 / float(1 + np.exp(-x))) - 1
 		# res = float(1 / float(1 + np.exp(-x)))
 		return res
