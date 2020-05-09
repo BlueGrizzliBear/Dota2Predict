@@ -25,6 +25,7 @@ WHERE player_matches.match_id = matches.match_id AND player_matches.player_slot 
 (SELECT teams.name FROM teams WHERE matches.dire_team_id = teams.team_id) as dire,
 
 matches.radiant_win as win,
+matches.start_time as time,
 leagues.name as leaguename
 
 FROM matches

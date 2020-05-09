@@ -11,17 +11,17 @@ def Data_Extractor():
 	slot = ["slot_" + str(item) for item in range(0, 10)]
 	slot.append('radiant')
 	slot.append('dire')
+	slot.append('time')
 	print_colored("Done !", '\033[92m')	
 	
 	y_parsed_data = data['win']
-	# z_parsed_data = data['time']
-	# print (z_parsed_data)
+	data_team_column = data[['radiant', 'dire']]
 
 	print_colored("Parsing data and creating arrays . . .", '\033[94m')	
-	t = parse_data(data[slot], data['time'])
+	t = parse_data(data[slot])
 	hero_label = t[0]
 	team_label = t[1]
 	x_parsed_data = t[2]
 	print_colored("Done !", '\033[92m')	
 
-	return hero_label, team_label, x_parsed_data, y_parsed_data
+	return hero_label, team_label, x_parsed_data, y_parsed_data, data_team_column

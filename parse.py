@@ -22,68 +22,60 @@ def	ft_progress(lst):
 		elapsed = time.perf_counter() - start
 		erase_line = '\x1b[2K'
 		print(erase_line + "ETA: %.2fs [%3.0f%%][%s] %i/%i | elapsed time %.2fs" % (eta, percent, progress, i + 1, len(lst), elapsed), end='\r', flush=True)
-		# print_colored(erase_line + "ETA: %.2fs [%3.0f%%][%s] %i/%i | elapsed time %.2fs" % (eta, percent, progress, i + 1, len(lst), elapsed), end='\r', flush=True, '\033[90m')
 		yield i
 
-def parse_data(data, time_column):
+def parse_data(data):
 
 	def sigmoid_(current, first, last):
-		x = 10 * (current - first) / (last - first)
-		res = float(1 / float(1 + np.exp(-x)))
+		x = 5 * (current - first) / (last - first)
+		res = 2 * float(1 / float(1 + np.exp(-x))) - 1
+		# res = float(1 / float(1 + np.exp(-x)))
 		return res
 
-	def get_hero_labels():	
+	def get_hero_labels():
 		heroes = pd.read_csv("./resources_data/dota2_heroes.csv")
 		hero_label = pd.DataFrame(np.array(heroes['id']))
 		return hero_label
 
 	def get_team_labels(data):
-		return pd.DataFrame(data['radiant'].append(data['dire']).unique())
+		team_label = pd.DataFrame(data['radiant'].append(data['dire']).unique())
+		team_label.columns = ['Team']
+		print (team_label.shape)
+		return team_label
 	
-	def assimilate_data(data, hero_label, team_label, time):
+	def assimilate_data(data, hero_label, team_label):
 		a = len(data)
 		b = len(team_label)
 		c = len(hero_label)
 		shape = (a,b,c)
 		last_array = np.zeros(shape)
 		
-		print (data.shape)
-		print (hero_label.shape)
-		print (team_label.shape)
-		print (time.shape)
+		time_min = data.loc[0, 'time']
+		time_max = data.loc[len(data) - 1, 'time']
 
-		max_iter = range(len(data))
-		# for row_index, values in enumerate(data.values):
-		for row_index in ft_progress(max_iter):
-			# print (row_index)
-			print (data.values[row_index])
-			player_slot = ["slot_" + str(item) for item in range(0, 10)]
+		for row_index, values in enumerate(data.values):
 
-			team_radiant = data.loc[row_index, 'radiant']
-			print (team_radiant)
-			team_dire = data.loc[row_index, 'dire']
-			print (team_dire)
-			# team_radiant = data['radiant'][row_index]
-			# team_dire = data['dire'][row_index]
+			team_radiant = values[10]
+			team_dire = values[11]
 			
-			# team_radiant_index = team_label.loc[team_radiant]
-			# team_dire_index = team_label.iloc(team_dire)
-			team_radiant_index = team_label[team_label[0] == team_radiant].index[0]
-			team_dire_index = team_label[team_label[0] == team_dire].index[0]
+			# A CHANGER
+			team_radiant_index = team_label[team_label['Team'] == team_radiant].index[0]
+			team_dire_index = team_label[team_label['Team'] == team_dire].index[0]
 			
-			for index, slot in enumerate(player_slot):
-				hero_index = hero_label[hero_label[0] == data[slot][row_index]].index[0]
-				sig = sigmoid_(time[row_index], time[0], time[len(time) - 1])
+			for index in range(0, 10):
+				
+				hero_index = hero_label[hero_label[0] == values[index]].index[0]
+				# sig = 1
+				sig = sigmoid_(values[12], time_min, time_max)
 				if index < 5:				
 					last_array[row_index][team_radiant_index][hero_index] = 1. * sig
 				elif index >= 5:
 					last_array[row_index][team_dire_index][hero_index] = -1. * sig
 			
-		print ("")
 		return last_array
 		
 	hero_label = get_hero_labels()
 	team_label = get_team_labels(data)
-	parsed_data = assimilate_data(data, hero_label, team_label, time_column)
+	parsed_data = assimilate_data(data, hero_label, team_label)
 
 	return hero_label, team_label, parsed_data
