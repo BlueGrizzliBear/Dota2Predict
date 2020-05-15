@@ -1,0 +1,40 @@
+SELECT
+matches.match_id,
+
+(SELECT player_matches.hero_id FROM player_matches 
+WHERE player_matches.match_id = matches.match_id AND player_matches.player_slot = 0) slot_0,
+(SELECT player_matches.hero_id FROM player_matches 
+WHERE player_matches.match_id = matches.match_id AND player_matches.player_slot = 1) slot_1,
+(SELECT player_matches.hero_id FROM player_matches 
+WHERE player_matches.match_id = matches.match_id AND player_matches.player_slot = 2) slot_2,
+(SELECT player_matches.hero_id FROM player_matches 
+WHERE player_matches.match_id = matches.match_id AND player_matches.player_slot = 3) slot_3,
+(SELECT player_matches.hero_id FROM player_matches 
+WHERE player_matches.match_id = matches.match_id AND player_matches.player_slot = 4) slot_4,
+(SELECT player_matches.hero_id FROM player_matches 
+WHERE player_matches.match_id = matches.match_id AND player_matches.player_slot = 128) slot_5,
+(SELECT player_matches.hero_id FROM player_matches 
+WHERE player_matches.match_id = matches.match_id AND player_matches.player_slot = 129) slot_6,
+(SELECT player_matches.hero_id FROM player_matches 
+WHERE player_matches.match_id = matches.match_id AND player_matches.player_slot = 130) slot_7,
+(SELECT player_matches.hero_id FROM player_matches 
+WHERE player_matches.match_id = matches.match_id AND player_matches.player_slot = 131) slot_8,
+(SELECT player_matches.hero_id FROM player_matches 
+WHERE player_matches.match_id = matches.match_id AND player_matches.player_slot = 132) slot_9,
+
+(SELECT teams.name FROM teams WHERE matches.radiant_team_id = teams.team_id) as radiant,
+(SELECT teams.name FROM teams WHERE matches.dire_team_id = teams.team_id) as dire,
+
+matches.radiant_win as win,
+matches.start_time as time,
+leagues.name as leaguename
+
+FROM matches
+JOIN match_patch using(match_id)
+JOIN leagues using(leagueid)
+WHERE TRUE
+AND matches.start_time >= extract(epoch from timestamp '2020-01-26T09:30:00.000Z')
+AND (matches.radiant_team_id IS NOT NULL AND matches.dire_team_id IS NOT NULL)
+
+ORDER BY matches.match_id ASC
+LIMIT 50000

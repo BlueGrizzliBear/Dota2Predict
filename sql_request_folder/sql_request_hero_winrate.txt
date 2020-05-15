@@ -1,0 +1,7 @@
+SELECT
+sum((radiant = radiant_win AND is_pick IS TRUE)::int)::float/NULLIF(sum(is_pick::int), 0) pick_winrate
+FROM picks_bans JOIN matches using(match_id) JOIN team_match using(match_id) JOIN teams using(team_id)
+WHERE TRUE AND team_match.radiant::int != picks_bans.team 
+AND (team_id = 15) AND matches.start_time >= extract(epoch from timestamp '2020-01-26T09:30:00.000Z')
+AND hero_id = (SELECT player_matches.hero_id FROM player_matches WHERE player_matches.match_id = matches.match_id AND player_matches.player_slot = 0)
+GROUP BY hero_id
