@@ -7,7 +7,7 @@ from sklearn.linear_model import LogisticRegressionCV
 from sklearn.model_selection import train_test_split
 # import sklearn.metrics
 from datetime import date
-from parse2 import parse_match_data
+from parse import parse_match_data
 
 def main():
 # FOR PRO GAMES

@@ -1,7 +1,3 @@
-<img
-  src="https://raw.githubusercontent.com/Etheram68/Header101-Vscode/master/logo-42.png"
-  width=128>
-
 # Dota2Predict
 
 A program to give a prediction on a Dota2 game depending on input parameters (team heroes composition, team names).
@@ -21,8 +17,8 @@ The project has a input data for the Machine Learning Model to train on.
 
 Data was collected with the open source Dota2 data platform (https://www.opendota.com/).
 Data currently used for the project:
-- Pro matches from 01 January 2020 to 15 May 2020
-- Pro matches from 01 April 2020 to 15 May 2020
+- Pro matches from 26 January 2020 to 15 May 2020
+- Pro matches from 17 April 2020 to 15 May 2020
 - Pro matches from 01 August 2019 to 15 May 2020
 
 New data can be fetched using SQL requests listed in the sql_request_folder.

@@ -1,6 +1,6 @@
 import numpy as np
 import pandas as pd
-from parse2 import parse_model_data
+from parse import parse_model_data
 from decorator import print_colored
 
 def Data_Extractor():
