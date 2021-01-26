@@ -1,7 +1,7 @@
 # Dota2Predict
 
 A program to give a prediction on a Dota2 game depending on input parameters (team heroes composition, team names).
-The project has a input data for the Machine Learning Model to train on.
+The project has 3 data files for test purposes, for the Machine Learning Model to train on.
 
 1) The program converts input data, creates a Machine Learning model, train the model on the input data.
 
