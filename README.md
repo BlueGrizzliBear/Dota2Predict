@@ -26,6 +26,7 @@ New data can be fetched using SQL requests listed in the sql_request_folder.
 ## Requirements
 
 Python3 is required for the program to work.
+Pandas, Sklearn needs to be installed.
 
 ## Configuration
 
