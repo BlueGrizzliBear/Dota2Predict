@@ -30,7 +30,7 @@ Python3 is required for the program to work.
 ## Configuration
 
 The Machine Learning model is trained based on a .json data file.
-This file can be changed before launching the program, inside DataExtractor.py
+The path to the file can be changed before launching the program, inside DataExtractor.py
 
 Defaults files can be found in the resource_data dir.
 
