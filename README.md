@@ -3,15 +3,15 @@
 A program to give a prediction on a Dota2 game depending on input parameters (team heroes composition, team names).
 The project has 3 data files for test purposes, for the Machine Learning Model to train on.
 
-1) The program converts input data, creates a Machine Learning model, train the model on the input data.
+1) The program converts and purifies input data, creates a Machine Learning model, train the model.
 
-2) The program displays you accuracy scores of team, corresponding to the data you fed it.
+2) The program displays accuracy scores of team, corresponding to the data you fed it.
 
 3) Then, the program prompts you with the game's parameters:
 	- Hero composition of both teams
 	- Team names
 
-4) The program gives a prediction on weather team1 will win or lose.
+4) The program gives a prediction on weather team_1 will win or lose.
 
 ## Data sources
 
