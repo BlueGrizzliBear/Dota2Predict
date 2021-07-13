@@ -11,7 +11,7 @@ The project has 3 data files for test purposes, for the Machine Learning Model t
 	- Hero composition of both teams
 	- Team names
 
-4) The program gives a prediction on weather team_1 will win or lose.
+4) The program gives a prediction on weather Team1 will win or lose.
 
 ## Data sources
 
